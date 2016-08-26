@@ -21,35 +21,40 @@ require_relative './spec_helper'
 
 describe 'apt_test::lwrps' do
   it 'creates the JuJu sources.list' do
+    skip('not on ubuntu') unless os[:family] == 'ubuntu'
     expect(file('/etc/apt/sources.list.d/juju.list')).to exist
   end
 
   it 'creates the NodeJS sources.list' do
+    skip('not on ubuntu') unless os[:family] == 'ubuntu'
     expect(file('/etc/apt/sources.list.d/nodejs.list')).to exist
   end
 
   it 'creates the HAProxy sources.list' do
+    skip('not on ubuntu') unless os[:family] == 'ubuntu'
     expect(file('/etc/apt/sources.list.d/haproxy.list')).to exist
   end
 
   it 'creates a repo with a url that is already quoted' do
+    skip('not on ubuntu') unless os[:family] == 'ubuntu'
     src = 'deb\s+\"http://ppa.launchpad.net/juju/stable/ubuntu\" trusty main'
     expect(file('/etc/apt/sources.list.d/juju.list').content).to match(/#{src}/)
   end
 
   it 'adds the JuJu package signing key' do
+    skip('not on ubuntu') unless os[:family] == 'ubuntu'
     expect(command('apt-key list').stdout).to contain('Launchpad Ensemble PPA')
   end
 
   it 'creates the correct pinning preferences for chef' do
-    pinning_prefs = 'Package: chef\nPin: version 10.16.2-1'
+    pinning_prefs = 'Package: chef\nPin: version 12.7.2-1'
     expect(file('/etc/apt/preferences.d/chef.pref').content).to match(/#{pinning_prefs}/)
   end
 
   it 'correctly handles a ppa: repository' do
     skip('not on ubuntu') unless os[:family] == 'ubuntu'
-    rust = 'http://ppa.launchpad.net/hansjorg/rust/ubuntu'
-    expect(file('/etc/apt/sources.list.d/rust.list').content).to match(/#{rust}/)
+    gimp = 'http://ppa.launchpad.net/otto-kesselgulasch/gimp/ubuntu'
+    expect(file('/etc/apt/sources.list.d/gimp.list').content).to match(/#{gimp}/)
   end
 
   it 'renames an old preferences file' do
@@ -67,7 +72,7 @@ describe 'apt_test::lwrps' do
   end
 
   it 'creates a repo with an architecture' do
-    cloudera = 'deb\s+\\[arch=amd64\\] \"http://archive.cloudera.com/cdh4/ubuntu/precise/amd64/cdh\" precise-cdh4 contrib'
+    cloudera = 'deb\s+\[arch=amd64\] "http:\/\/archive.cloudera.com\/cdh4\/ubuntu\/precise\/amd64\/cdh" precise-cdh4 contrib'
     expect(file('/etc/apt/sources.list.d/cloudera.list').content).to match(/#{cloudera}/)
   end
 
